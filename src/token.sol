@@ -10,16 +10,13 @@ contract Network is ERC20, ERC20Burnable {
 
     mapping(uint256 => bool) public isClaimed;
 
-    uint256 public totalValue = 1;
-
     constructor()
         ERC20("Network", "NET")
     {}
 
     function claim(uint256[] calldata _secrets) public {
         uint256 _minted = 0;
-        
-        uint256 _totalValue = totalValue;
+        uint256 _supply = totalSupply();
 
         for (uint256 _i = 0; _i < _secrets.length; _i++) {
             uint256 _secret = _secrets[_i];
@@ -48,21 +45,15 @@ contract Network is ERC20, ERC20Burnable {
                 */
                 _value = U256_MAX / _divisor;
 
-                /**
-                 * Apply nerfing
-                 */
-                _minted += _value / ((_totalValue + _value) / _totalValue);
+                if (_value > (_supply / 100))
+                    _value = _supply / 100;
 
-                /**
-                 * Take the raw value into account
-                 */
-                _totalValue += _value;
+                _minted += _value;
             }
 
             isClaimed[_secret] = true;
         }
 
-        totalValue = _totalValue;
         _mint(msg.sender, _minted);
     }
 
