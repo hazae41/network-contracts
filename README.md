@@ -4,4 +4,4 @@
 
 DEPLOYED
 
-- [Gnosis contract](https://gnosisscan.io/address/0xff61bb11819455d58944a83e44b87e80cfc19ea2)
+- [Gnosis contract](https://gnosisscan.io/address/0xCb781997B869Be704a9e54b0b61363f5F7f6d795)
