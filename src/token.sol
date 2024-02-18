@@ -53,23 +53,23 @@ contract Network is ERC20, ERC20Burnable {
                 _value = U256_MAX / _divisor;
 
                 /**
+                 * Take the raw value into account
+                 */
+                _totalCount += 1;
+                _totalValue += _value;
+                _totalAverage = _totalValue / _totalCount;
+
+                /**
                  * Halving based on average
                  */
                 _value = _value / _totalAverage;
-            }
 
-            /**
-             * Nerf if lucky value is too far from the current average
-             */
-            if (_value > 1000)
-                _value = 1000;
+                /**
+                 * Nerf if lucky value is too far from the current average
+                 */
+                if (_value > 1000)
+                    _value = 1000;
 
-            unchecked {
-                _totalCount += 1;
-                _totalValue += _value;
-
-                _totalAverage = _totalValue / _totalCount;
-                
                 _minted += _value;
             }
 
