@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
 uint256 constant U256_MAX = (2 ** 256) - 1;
+uint256 constant U256_1M = 10 ** 6;
 
 contract Network is ERC20, ERC20Burnable {
 
@@ -55,10 +56,13 @@ contract Network is ERC20, ERC20Burnable {
                 _totalCount += 1;
                 _totalValue += _value;
 
-                _value = _value / _average;
+                if (_average < U256_1M)
+                    _average = U256_1M;
 
-                if (_value > 1_000_000)
-                    _value = 1_000_000;
+                _value = _value / (_average / U256_1M);
+
+                if (_value > U256_1M)
+                    _value = U256_1M;
                 
                 _average = _totalValue / _totalCount;
                 
