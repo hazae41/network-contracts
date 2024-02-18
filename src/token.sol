@@ -10,62 +10,72 @@ contract Network is ERC20, ERC20Burnable {
 
     mapping(uint256 => bool) public isClaimed;
 
-    uint256 public count = 0;
-    uint256 public average = 0;
+    uint256 public totalCount = 0;    
+    uint256 public totalValue = 0;
 
     constructor()
         ERC20("Network", "NET")
     {}
 
-    function claim(uint256[] calldata secrets) public {
-        uint256 total = 0;
+    function claim(uint256[] calldata _secrets) public {
+        uint256 _minted = 0;
+        
+        uint256 _totalCount = totalCount;
+        uint256 _totalValue = totalValue;
 
-        for (uint256 i = 0; i < secrets.length; i++) {
-            uint256 secret = secrets[i];
+        uint256 _totalAverage = _totalValue / _totalCount;
 
-            if (isClaimed[secret])
+        for (uint256 _i = 0; _i < _secrets.length; _i++) {
+            uint256 _secret = _secrets[_i];
+
+            if (isClaimed[_secret])
                 continue;
 
             /**
              * Zero-knowledge proof
              */
-            uint256 proof = uint256(keccak256(abi.encode(secret)));
+            uint256 _proof = uint256(keccak256(abi.encode(_secret)));
 
             /**
              * Value is different for each given chain + contract + receiver
              */
-            uint256 divisor = uint256(keccak256(abi.encode(block.chainid, address(this), msg.sender, proof)));
+            uint256 _divisor = uint256(keccak256(abi.encode(block.chainid, address(this), msg.sender, _proof)));
 
-            if (divisor == 0)
+            if (_divisor == 0)
                 continue;
 
-            uint256 value;
+            uint256 _value;
 
             /**
              * Rarer hashes yield more coins
              */
             unchecked {
-                value = U256_MAX / divisor;
+                _value = U256_MAX / _divisor;
+            }
+
+            unchecked {
+                _totalCount += 1;
+                _totalValue += _value;
             }
 
             /**
-             * Automatic probabilistic halving
+             * Nerf lucky values
              */
-            uint256 count2 = count + 1;
-            uint256 average2 = ((count * average) + value) / count2;
+            if (_value > _totalAverage)
+                _value = _totalAverage;
 
-            if (value > average)
-                value = average;
+            unchecked {
+                _totalAverage = _totalValue / _totalCount;
+                _minted += _value;
+            }
 
-            count = count2;
-            average = average2;
-
-            isClaimed[secret] = true;
-
-            total += value;
+            isClaimed[_secret] = true;
         }
 
-        _mint(msg.sender, total);
+        totalCount = _totalCount;
+        totalValue = _totalValue;
+
+        _mint(msg.sender, _minted);
     }
 
 }
