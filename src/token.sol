@@ -10,8 +10,8 @@ contract Network is ERC20, ERC20Burnable {
 
     mapping(uint256 => bool) public isClaimed;
 
-    uint256 public totalCount = 0;    
-    uint256 public totalValue = 0;
+    uint256 public totalCount = 1;    
+    uint256 public totalValue = 1;
 
     constructor()
         ERC20("Network", "NET")
@@ -46,26 +46,30 @@ contract Network is ERC20, ERC20Burnable {
 
             uint256 _value;
 
-            /**
-             * Rarer hashes yield more coins
-             */
             unchecked {
+               /**
+                * Rarer hashes yield more coins
+                */
                 _value = U256_MAX / _divisor;
+
+                /**
+                 * Halving based on average
+                 */
+                _value = _value / _totalAverage;
             }
+
+            /**
+             * Nerf if lucky value is too far from the current average
+             */
+            if (_value > 1000)
+                _value = 1000;
 
             unchecked {
                 _totalCount += 1;
                 _totalValue += _value;
-            }
 
-            /**
-             * Nerf lucky values
-             */
-            if (_value > _totalAverage)
-                _value = _totalAverage;
-
-            unchecked {
                 _totalAverage = _totalValue / _totalCount;
+                
                 _minted += _value;
             }
 
