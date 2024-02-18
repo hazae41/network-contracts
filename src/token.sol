@@ -10,8 +10,8 @@ contract Network is ERC20, ERC20Burnable {
 
     mapping(uint256 => bool) public isClaimed;
 
-    uint256 public totalCount = 0;
-    uint256 public totalValue = 0;
+    uint256 public totalCount = 1;
+    uint256 public totalValue = 1;
 
     constructor()
         ERC20("Network", "NET")
@@ -57,8 +57,8 @@ contract Network is ERC20, ERC20Burnable {
 
                 _value = _value / _average;
 
-                if (_value > 100)
-                    _value = 100;
+                if (_value > 1_000_000)
+                    _value = 1_000_000;
                 
                 _average = _totalValue / _totalCount;
                 
