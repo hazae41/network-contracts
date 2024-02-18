@@ -23,8 +23,6 @@ contract Network is ERC20, ERC20Burnable {
         uint256 _totalCount = totalCount;
         uint256 _totalValue = totalValue;
 
-        uint256 _totalAverage = _totalValue / _totalCount;
-
         for (uint256 _i = 0; _i < _secrets.length; _i++) {
             uint256 _secret = _secrets[_i];
 
@@ -57,18 +55,14 @@ contract Network is ERC20, ERC20Burnable {
                  */
                 _totalCount += 1;
                 _totalValue += _value;
-                _totalAverage = _totalValue / _totalCount;
+
+                _value = (_totalValue + (_value * (2 ** 18))) / _totalValue;
 
                 /**
-                 * Halving based on average
+                 * Nerf if lucky value is too far
                  */
-                _value = _value / _totalAverage;
-
-                /**
-                 * Nerf if lucky value is too far from the current average
-                 */
-                if (_value > 1000)
-                    _value = 1000;
+                if (_value > 100)
+                    _value = 100;
 
                 _minted += _value;
             }
