@@ -67,7 +67,9 @@ while (total < price) {
 }
 ```
 
-But this would still require computation, and it only works once per reputation.
+But this would still require half the computation. So a server receiving some proofs should only account them for half their value.
+
+Also, since you can have a reputation protocol on top of Network, then spoofing proofs can most of the time only be done once.
 
 ### Optimizations
 
