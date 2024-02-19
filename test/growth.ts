@@ -2,13 +2,25 @@ let total = 1n
 let count = 1n
 let supply = 0n
 
-for (let i = 1n; i < 20n; i++) {
+function sqrt(i: bigint) {
+  let result = 1n;
+  let current = 1n;
+
+  while (current * current <= i) {
+    result = current;
+    current *= 2n;
+  }
+
+  return result
+}
+
+for (let i = 1n; i < 10000000000n; i++) {
   // const x = 1n // constant
   // const x = i // linear
-  const x = i ** 2n // quadratic
+  const x = sqrt(i) // square root
+  // const x = i ** 2n // quadratic
   // const x = i ** 3n // cubic
   // const x = 2n ** i // exponential
-  // const x = ((50n * i) / 100n) + 1n // sublinear
 
   total += x
   count++
