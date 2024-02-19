@@ -12,7 +12,7 @@ We want a function that
 
 1) can be proven with zero-knowledge
 2) is optimized for both EVM and for end-user devices (e.g. node, browser)
-3) emits tokens at a constant rate (even if the hashrate grows)
+3) emits tokens at a constant rate (even if the hashrate grows unexpectedly)
 
 ### Zero-Knowledge Proof
 
