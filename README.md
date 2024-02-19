@@ -121,6 +121,7 @@ Since `total / count` is the average of all values, we essentially divide the va
 
 This works when `value` over time (= the hashrate) is
 - constant (no grow) -> average is constant too -> emission is constant
+- sublinear -> average is sublinear too -> emission is constant
 - linear -> average is linear too -> emission is constant
 - quadratic -> average is quadratic too -> emission is constant
 - cubic -> average is cubic too -> emission is constant
@@ -138,6 +139,7 @@ for (let i = 1n; i < 1000000000n; i++) {
   const x = i ** 2n // quadratic
   // const x = i ** 3n // cubic
   // const x = 2n ** i // exponential
+  // const x = ((50n * i) / 100n) + 1n // sublinear
 
   total += x
   count += 1
