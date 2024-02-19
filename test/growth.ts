@@ -26,10 +26,14 @@ for (let i = 1n; i < 10000000000n; i++) {
   count++
 
   const average = total / count
+
+  /**
+   * Should be approximately constant over time
+   */
   const minted = x / average
 
   supply += minted
 
-  console.log(x.toString(), total.toString(), supply.toString())
+  console.log(x.toString(), total.toString(), supply.toString(), minted.toString())
 }
 
