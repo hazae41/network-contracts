@@ -21,11 +21,20 @@ contract Network is ERC20, ERC20Burnable {
     {}
 
     function claim(uint256 _nonce, uint256[] calldata _secrets) public {
+        /**
+         * Total value to mint
+         */
         uint256 _minted = 0;
 
+        /**
+         * Load global state
+         */
         uint256 _totalCount = totalCount;
         uint256 _totalValue = totalValue;
 
+        /**
+         * Compute average for the first iteration
+         */
         uint256 _average = _totalValue / _totalCount;
 
         for (uint256 _i = 0; _i < _secrets.length; _i++) {
@@ -41,8 +50,15 @@ contract Network is ERC20, ERC20Burnable {
              */
             uint256 _divisor = uint256(keccak256(abi.encode(block.chainid, address(this), msg.sender, _nonce, _proof)));
 
+            /**
+             * Cannot divide by 0
+             */
             if (_divisor == 0)
                 continue;
+
+            /**
+             * A secret can be replayed if its value differs
+             */
             if (isClaimed[_divisor])
                 continue;
 
@@ -54,27 +70,55 @@ contract Network is ERC20, ERC20Burnable {
                  */
                 _value = U256_MAX / _divisor;
 
+                /**
+                 * Apply derivatives
+                 */
                 _totalCount += 1;
                 _totalValue += _value;
 
+                /**
+                 * Minimum is 1000x lower than average
+                 */
                 if (_average < U256_1K)
                     _average = U256_1K;
 
+                /**
+                 * Emit at a constant rate
+                 */
                 _value = _value / (_average / U256_1K);
 
+                /**
+                 * Maximum is 1000x bigger than average
+                 */
                 if (_value > U256_1M)
                     _value = U256_1M;
                 
+                /**
+                 * Update average after each iteration
+                 */
                 _average = _totalValue / _totalCount;
+
+                /**
+                 * Update total value to mint
+                 */
                 _minted += _value;
             }
 
+            /**
+             * Prevent replay
+             */
             isClaimed[_divisor] = true;
         }
 
+        /**
+         * Save global state
+         */
         totalValue = _totalValue;
         totalCount = _totalCount;
 
+        /**
+         * Only do one mint per claim
+         */
         _mint(msg.sender, _minted);
     }
 
