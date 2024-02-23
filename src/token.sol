@@ -11,8 +11,14 @@ uint256 constant U256_1M = 10 ** 6;
 
 contract Network is ERC20, ERC20Burnable {
 
+    /**
+     * Replay protection
+     */
     mapping(uint256 => bool) public isClaimed;
 
+    /**
+     * Primitive integrals
+     */
     uint256 public totalCount = 1;
     uint256 public totalValue = 1;
 
@@ -20,6 +26,9 @@ contract Network is ERC20, ERC20Burnable {
         ERC20("Network", "NET")
     {}
 
+    /**
+     * Claim secrets for a particular nonce and a particular account
+     */
     function claim(uint256 _nonce, uint256[] calldata _secrets) public {
         /**
          * Total value to mint
