@@ -4,7 +4,7 @@
 
 ### Beta
 
-[DEPLOYED ON GNOSIS](https://gnosisscan.io/address/0xCb781997B869Be704a9e54b0b61363f5F7f6d795)
+[DEPLOYED ON GNOSIS](https://gnosisscan.io/address/0xF1eC047cbd662607BBDE9Badd572cf0A23E1130B)
 
 ## Constraints
 
