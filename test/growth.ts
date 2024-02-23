@@ -25,12 +25,18 @@ for (let i = 1n; i < 10000000000n; i++) {
   total += x
   count++
 
-  const average = total / count
+  let average = total / count
+
+  if (average < 1_000n)
+    average = 1_000n
 
   /**
    * Should be approximately constant over time
    */
-  const minted = x / average
+  let minted = x / (average / 1_000n)
+
+  if (minted > 1_000_000n)
+    minted = 1_000_000n
 
   supply += minted
 

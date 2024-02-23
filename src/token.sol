@@ -5,6 +5,8 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 
 uint256 constant U256_MAX = (2 ** 256) - 1;
+
+uint256 constant U256_1K = 10 ** 3;
 uint256 constant U256_1M = 10 ** 6;
 
 contract Network is ERC20, ERC20Burnable {
@@ -18,7 +20,7 @@ contract Network is ERC20, ERC20Burnable {
         ERC20("Network", "NET")
     {}
 
-    function claim(uint256[] calldata _secrets) public {
+    function claim(uint256 _nonce, uint256[] calldata _secrets) public {
         uint256 _minted = 0;
 
         uint256 _totalCount = totalCount;
@@ -29,20 +31,19 @@ contract Network is ERC20, ERC20Burnable {
         for (uint256 _i = 0; _i < _secrets.length; _i++) {
             uint256 _secret = _secrets[_i];
 
-            if (isClaimed[_secret])
-                continue;
-
             /**
              * Zero-knowledge proof
              */
             uint256 _proof = uint256(keccak256(abi.encode(_secret)));
 
             /**
-             * Value is different for each given chain + contract + receiver
+             * Different for each given chain + contract + receiver + nonce
              */
-            uint256 _divisor = uint256(keccak256(abi.encode(block.chainid, address(this), msg.sender, _proof)));
+            uint256 _divisor = uint256(keccak256(abi.encode(block.chainid, address(this), msg.sender, _nonce, _proof)));
 
             if (_divisor == 0)
+                continue;
+            if (isClaimed[_divisor])
                 continue;
 
             uint256 _value;
@@ -56,20 +57,19 @@ contract Network is ERC20, ERC20Burnable {
                 _totalCount += 1;
                 _totalValue += _value;
 
-                if (_average < U256_1M)
-                    _average = U256_1M;
+                if (_average < U256_1K)
+                    _average = U256_1K;
 
-                _value = _value / (_average / U256_1M);
+                _value = _value / (_average / U256_1K);
 
                 if (_value > U256_1M)
                     _value = U256_1M;
                 
                 _average = _totalValue / _totalCount;
-                
                 _minted += _value;
             }
 
-            isClaimed[_secret] = true;
+            isClaimed[_divisor] = true;
         }
 
         totalValue = _totalValue;
