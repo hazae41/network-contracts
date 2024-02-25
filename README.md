@@ -1,5 +1,7 @@
 # Network Contracts
 
+Smart contracts for [Network](https://github.com/stars/hazae41/lists/network)
+
 ## Status
 
 ### Beta
