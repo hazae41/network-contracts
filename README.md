@@ -6,7 +6,7 @@ Smart contracts for [Network](https://github.com/stars/hazae41/lists/network)
 
 ### Beta
 
-[DEPLOYED ON GNOSIS](https://gnosisscan.io/address/0x7e19298D4c9b0b97b9A40A5ac08Cc9105534324f)
+[DEPLOYED ON GNOSIS](https://gnosisscan.io/address/0x0a4d5EFEa910Ea5E39be428A3d57B80BFAbA52f4)
 
 ## Constraints
 
